@@ -76,16 +76,24 @@ export class App extends React.Component {
   };
 
   processImage = async uri => {
-    const visionResp = (await RNTextDetector.detectFromUri(uri)) || [];
-    const visionText = visionResp.map(v => v.text).join();
-
-    const base64 = (await RNFS.readFile(uri, 'base64')) || '';
-    const binaryLength = base64.length;
-
+    let visionText = '';
+    try {
+      const visionResp = (await RNTextDetector.detectFromUri(uri)) || [];
+      visionText = visionResp.map(v => v.text).join();
+    } catch (e) {
+      console.log('error in detectFromUri', e);
+    }
+    let binaryLength = 0;
+    try {
+      const base64 = (await RNFS.readFile(uri, 'base64')) || '';
+      binaryLength = base64.length;
+    } catch (e) {
+      console.log('error in readFile', e);
+    }
     this.setState({
       selectedImages: [],
       imageUrl: uri,
-      visionText:  visionText,
+      visionText: visionText,
       binaryLength: binaryLength,
     });
   };
@@ -132,7 +140,7 @@ export class App extends React.Component {
                 source={{
                   uri: this.state.imageUrl,
                 }}
-              />              
+              />
               <Text>Uri: {this.state.imageUrl}</Text>
               <Text>OCR Text: {this.state.visionText}</Text>
               <Text>File length by RNFS:{this.state.binaryLength}</Text>

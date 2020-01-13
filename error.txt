@@ -1,0 +1,21 @@
+Em đang xài react native build 1 cái app, trong đó có 1 feature đọc text từ file ảnh
+Build bên android ok hết
+
+Đầu tiên xài https://github.com/jeanpan/react-native-camera-roll-picker#readme để lấy file từ photo library, và được cái uri: ph://11A68DD6-A651-462D-BDAB-68FB853ED141/L0/001
+
+Sau đó em xài cái thư viện này https://github.com/zsajjad/react-native-text-detector để đọc text từ file hình trên
+
+Nhưng bên iOS mỗi lần gọi hàm detectFromUri thì thấy lỗi sau 
+
+NSURLConnection finished with error - code -1002
+
+Em thử xài RNFS.readFile của thằng này https://github.com/itinance/react-native-fs thì nhận được lỗi sau
+ 
+'error in readFile', [Error: ENOENT: no such file or directory, open 'ph://11A68DD6-A651-462D-BDAB-68FB853ED141/L0/001'
+
+Có vẻ cái Uri không chính xác, tuy nhiên khi em gán cái Uri trên cho một image control thì nó show cái hình lên được
+
+
+Đây là source code của em: https://github.com/haison8x/react-native-test-ocr
+
+Nhờ anh nghía qua dùm
