@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1004166379300-paqp2u2f5lhh4no7jjukf2v4s0i1l5gp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1004166379300-paqp2u2f5lhh4no7jjukf2v4s0i1l5gp</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA02ftKuONwXJKitOEmF0aulsvGbtsBSMo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1004166379300</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.myocr</string>
+	<key>PROJECT_ID</key>
+	<string>myocr-3b6a2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>myocr-3b6a2.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1004166379300:ios:41ca095a18560cebc3e5b1</string>
+	<key>DATABASE_URL</key>
+	<string>https://myocr-3b6a2.firebaseio.com</string>
+</dict>
+</plist>

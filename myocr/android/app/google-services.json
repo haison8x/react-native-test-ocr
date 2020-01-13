@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1004166379300",
+    "firebase_url": "https://myocr-3b6a2.firebaseio.com",
+    "project_id": "myocr-3b6a2",
+    "storage_bucket": "myocr-3b6a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004166379300:android:6c2bab7583c6c001c3e5b1",
+        "android_client_info": {
+          "package_name": "com.myocr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004166379300-7fjg7rq9n553hckhn7tn5g45m92a5l2l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDElhu20ZFquT14WKHTng168RT6Rt7wwUQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004166379300-7fjg7rq9n553hckhn7tn5g45m92a5l2l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
