@@ -5049,6 +5049,13 @@ react-native-camera-roll-picker@^2.0.0:
   dependencies:
     prop-types "^15.6.0"
 
+react-native-camera@^3.15.1:
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.15.1.tgz#8e4eb67cb6687b5250f849b348f0d19a01649105"
+  integrity sha512-xj1sljzFq8HVX22d2T945dsJdK/KFb3jaXUHEYGwMp/zz0ypIs3mY3NezdpyYpS1ioKKzdIcLrxz2VKzDCXaCg==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-fs@^2.16.2:
   version "2.16.2"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.16.2.tgz#a312ce5f418e6d91d13b51e50ba0c49b1da1ec79"

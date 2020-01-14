@@ -17,18 +17,31 @@ import {
   Image,
   Text,
   PermissionsAndroid,
+  TouchableOpacity,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import RNTextDetector from 'react-native-text-detector';
 import RNFS from 'react-native-fs';
 import CameraRollPicker from 'react-native-camera-roll-picker';
+import {RNCamera as Camera} from 'react-native-camera';
+
+import {Dimensions, Platform} from 'react-native';
+const {height, width} = Dimensions.get('window');
+
+const PICTURE_OPTIONS = {
+  quality: 1,
+  fixOrientation: true,
+  forceUpOrientation: true,
+};
+
 export class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       imageUrl: 'https://facebook.github.io/react-native/img/tiny_logo.png',
       showCameraRollPicker: false,
+      showCamera: false,
       selectedImages: [],
     };
   }
@@ -76,13 +89,9 @@ export class App extends React.Component {
   };
 
   processImage = async uri => {
-    let visionText = '';
-    try {
-      const visionResp = (await RNTextDetector.detectFromUri(uri)) || [];
-      visionText = visionResp.map(v => v.text).join();
-    } catch (e) {
-      console.log('error in detectFromUri', e);
-    }
+    const visionResp = (await RNTextDetector.detectFromUri(uri)) || [];
+    const visionText = visionResp.map(v => v.text).join();
+
     let binaryLength = 0;
     try {
       const base64 = (await RNFS.readFile(uri, 'base64')) || '';
@@ -95,9 +104,64 @@ export class App extends React.Component {
       imageUrl: uri,
       visionText: visionText,
       binaryLength: binaryLength,
+      showCamera: false,
+      showCameraRollPicker: false,
     });
   };
 
+  takePicture = async camera => {
+    try {
+      const data = await camera.takePictureAsync(PICTURE_OPTIONS);
+      this.setState({
+        showCamera: false,
+      });
+      if (!data.uri) {
+        throw 'OTHER';
+      }
+      this.setState(
+        {
+          imageUrl: data.uri,
+        },
+        () => {
+          this.processImage(data.uri);
+        },
+      );
+    } catch (e) {
+      console.warn(e);
+      this.reset(e);
+    }
+  };
+
+  getCameraView = () => {
+    return (
+      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <View style={styles.screen}>
+          <Camera
+            ref={cam => {
+              this.camera = cam;
+            }}
+            key="camera"
+            style={styles.camera}
+            notAuthorizedView={null}
+            flashMode={Camera.Constants.FlashMode.off}>
+            {({camera, status}) => {
+              if (status !== 'READY') {
+                return null;
+              }
+              return (
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    onPress={() => this.takePicture(camera)}
+                    style={styles.circle}
+                  />
+                </View>
+              );
+            }}
+          </Camera>
+        </View>
+      </SafeAreaView>
+    );
+  };
   getRollPickerView = () => {
     return (
       <SafeAreaView style={styles.cameraContainer}>
@@ -123,6 +187,10 @@ export class App extends React.Component {
       return this.getRollPickerView();
     }
 
+    if (this.state.showCamera) {
+      return this.getCameraView();
+    }
+
     return (
       <SafeAreaView>
         <StatusBar barStyle="dark-content" />
@@ -132,8 +200,12 @@ export class App extends React.Component {
             style={styles.scrollView}>
             <View style={styles.sectionContainer}>
               <Button
-                title="Do OCR"
+                title="Do OCR From Library Image"
                 onPress={() => this.showCameraRollPicker()}
+              />
+              <Button
+                title="Do OCR From Camera"
+                onPress={() => this.setState({showCamera: true})}
               />
               <Image
                 style={{width: 50, height: 50}}
@@ -195,6 +267,39 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  buttonContainer: {
+    width: 70,
+    height: 70,
+    backgroundColor: Colors.white,
+    borderRadius: 35,
+    position: 'absolute',
+    bottom: 80,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  camera: {
+    position: 'absolute',
+    width: width,
+    height: height,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 0,
+    left: 0,
+    flex: 1,
+  },
+  screen: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  circle: {
+    width: 64,
+    height: 64,
+    backgroundColor: '#000',
+    borderRadius: 32,
+    borderWidth: 4,
+    borderColor: '#000',
   },
 });
 
