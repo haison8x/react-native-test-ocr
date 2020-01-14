@@ -20,14 +20,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import RNTextDetector from 'react-native-text-detector';
-import RNFS from 'react-native-fs';
 import CameraRollPicker from 'react-native-camera-roll-picker';
-import {RNCamera as Camera} from 'react-native-camera';
+import { RNCamera as Camera } from 'react-native-camera';
 
-import {Dimensions, Platform} from 'react-native';
-const {height, width} = Dimensions.get('window');
+import { Dimensions, Platform } from 'react-native';
+import RNFSHelper from './rnfshelper';
+
+const { height, width } = Dimensions.get('window');
 
 const PICTURE_OPTIONS = {
   quality: 1,
@@ -45,22 +46,25 @@ export class App extends React.Component {
       selectedImages: [],
     };
   }
+  
+  rnfsHelper = new RNFSHelper();
 
   showCameraRollPicker = async () => {
+
     const os = Platform.OS; // android or ios
     if (os === 'android') {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.setState({showCameraRollPicker: true});
+        this.setState({ showCameraRollPicker: true });
       } else {
         Alert.alert(
           'Bạn phải cấp quyền truy cập kho hình ảnh mới có thể sử dụng chức năng này',
         );
       }
     } else {
-      this.setState({showCameraRollPicker: true});
+      this.setState({ showCameraRollPicker: true });
     }
   };
 
@@ -89,21 +93,14 @@ export class App extends React.Component {
   };
 
   processImage = async uri => {
-    const visionResp = (await RNTextDetector.detectFromUri(uri)) || [];
+    const tempFile = await this.rnfsHelper.createTempFileIfIOS(uri);    
+    const visionResp = (await RNTextDetector.detectFromUri(tempFile))||[];    
     const visionText = visionResp.map(v => v.text).join();
 
-    let binaryLength = 0;
-    try {
-      const base64 = (await RNFS.readFile(uri, 'base64')) || '';
-      binaryLength = base64.length;
-    } catch (e) {
-      console.log('error in readFile', e);
-    }
     this.setState({
       selectedImages: [],
-      imageUrl: uri,
+      imageUrl: tempFile,
       visionText: visionText,
-      binaryLength: binaryLength,
       showCamera: false,
       showCameraRollPicker: false,
     });
@@ -134,7 +131,7 @@ export class App extends React.Component {
 
   getCameraView = () => {
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={styles.screen}>
           <Camera
             ref={cam => {
@@ -144,7 +141,7 @@ export class App extends React.Component {
             style={styles.camera}
             notAuthorizedView={null}
             flashMode={Camera.Constants.FlashMode.off}>
-            {({camera, status}) => {
+            {({ camera, status }) => {
               if (status !== 'READY') {
                 return null;
               }
@@ -167,7 +164,7 @@ export class App extends React.Component {
       <SafeAreaView style={styles.cameraContainer}>
         <Button
           title="Cancel"
-          onPress={() => this.setState({showCameraRollPicker: false})}></Button>
+          onPress={() => this.setState({ showCameraRollPicker: false })}></Button>
         <CameraRollPicker
           groupTypes="All"
           assetType="Photos"
@@ -205,17 +202,16 @@ export class App extends React.Component {
               />
               <Button
                 title="Do OCR From Camera"
-                onPress={() => this.setState({showCamera: true})}
+                onPress={() => this.setState({ showCamera: true })}
               />
               <Image
-                style={{width: 50, height: 50}}
+                style={{ width: 50, height: 50 }}
                 source={{
                   uri: this.state.imageUrl,
                 }}
               />
               <Text>Uri: {this.state.imageUrl}</Text>
               <Text>OCR Text: {this.state.visionText}</Text>
-              <Text>File length by RNFS:{this.state.binaryLength}</Text>
             </View>
           </ScrollView>
         </SafeAreaView>

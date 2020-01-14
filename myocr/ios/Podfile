@@ -40,6 +40,7 @@ target 'myocr' do
   'BarcodeDetectorMLKit'
 ]
   pod 'RNTextDetector', path: '../node_modules/react-native-text-detector/ios'
+  # https://stackoverflow.com/questions/52331634/xcode-10-0-gm-dyld-lazy-symbol-binding-failed-cant-resolve-symbol-cxa-gu
   pod 'TesseractOCRiOS', :git => 'git://github.com/parallaxe/Tesseract-OCR-iOS.git', :branch => 'macos-support'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
   target 'myocrTests' do
